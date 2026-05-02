@@ -1,0 +1,7 @@
+services:
+  pcc:
+    build: .
+    container_name: pertamina-necc
+    ports:
+      - "8080:80"
+    restart: unless-stopped
