@@ -3,5 +3,5 @@ services:
     build: .
     container_name: pertamina-necc
     ports:
-      - "8080:80"
+      - "3001:80"
     restart: unless-stopped
