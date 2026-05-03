@@ -117,7 +117,7 @@ window.DashHSE = (() => {
                 </span>`).join('')}
             </div>
           </div>
-          <div id="hse-map" style="flex:1;min-height:0;filter:invert(1) hue-rotate(200deg) brightness(0.5);"></div>
+          <div id="hse-map" style="flex:1;min-height:0;"></div>
         </div>
 
         <!-- Center: Incidents + PTW -->

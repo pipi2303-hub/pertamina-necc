@@ -1541,3 +1541,8 @@ html, body {
   color: var(--text3);
   margin-top: 2px;
 }
+
+/* HSE map — filter only tiles, markers stay full-color */
+#hse-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(200deg) brightness(0.68);
+}
