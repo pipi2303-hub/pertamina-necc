@@ -322,10 +322,10 @@ window.DashHSE = (() => {
         .addTo(maps.main)
         .bindPopup(
           `<div style="font-family:Inter,sans-serif;min-width:160px;">
-             <div style="font-weight:700;color:#eef2ff;margin-bottom:4px;">${s.name}</div>
-             <div style="color:#8095be;font-size:11px;">LTIF: <b style="color:${s.ltif<0.3?'#00d4a0':'#f5a623'}">${s.ltif}</b></div>
-             <div style="color:#8095be;font-size:11px;">Days Without LTI: <b style="color:#eef2ff">${s.days}</b></div>
-             <div style="color:#8095be;font-size:11px;">Compliance: <b style="color:${s.comply>=95?'#00d4a0':s.comply>=90?'#00c8ff':'#f5a623'}">${s.comply}%</b></div>
+             <div style="font-weight:700;color:#111827;margin-bottom:4px;">${s.name}</div>
+             <div style="color:#4b5563;font-size:11px;">LTIF: <b style="color:${s.ltif<0.3?'#059669':'#d97706'}">${s.ltif}</b></div>
+             <div style="color:#4b5563;font-size:11px;">Days Without LTI: <b style="color:#111827">${s.days}</b></div>
+             <div style="color:#4b5563;font-size:11px;">Compliance: <b style="color:${s.comply>=95?'#059669':s.comply>=90?'#0284c7':'#d97706'}">${s.comply}%</b></div>
            </div>`
         );
     });
@@ -351,10 +351,10 @@ window.DashHSE = (() => {
         .bindPopup(
           `<div style="font-family:Inter,sans-serif;min-width:190px;">
              <div style="font-weight:700;color:${color};margin-bottom:4px;">${inc.type}</div>
-             <div style="font-weight:600;color:#eef2ff;margin-bottom:3px;">${inc.site}</div>
-             <div style="color:#8095be;font-size:11px;margin-bottom:3px;">${inc.loc} · ${inc.time} WIB</div>
-             <div style="color:${color};font-size:11px;margin-bottom:6px;">${inc.sev} · ${inc.sts}</div>
-             <div style="color:#c5d0e8;font-size:10.5px;line-height:1.4;">${inc.desc}</div>
+             <div style="font-weight:600;color:#111827;margin-bottom:3px;">${inc.site}</div>
+             <div style="color:#4b5563;font-size:11px;margin-bottom:3px;">${inc.loc} · ${inc.time} WIB</div>
+             <div style="color:${color};font-size:11px;font-weight:600;margin-bottom:6px;">${inc.sev} · ${inc.sts}</div>
+             <div style="color:#374151;font-size:10.5px;line-height:1.4;">${inc.desc}</div>
            </div>`
         );
 
