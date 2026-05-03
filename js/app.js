@@ -33,6 +33,7 @@ window.App = (() => {
     distribution: () => window.DashDistribution,
     spklu:        () => window.DashSPKLU,
     hse:          () => window.DashHSE,
+    financial:    () => window.DashFinancial,
     ai:           () => window.DashAI,
   };
 
@@ -249,6 +250,8 @@ window.App = (() => {
     vendor.style.cssText = 'position:fixed;bottom:4px;right:10px;z-index:9999;font-size:9px;color:#4a5f82;';
     vendor.textContent = 'PT Limabelapusat Inovasi Informatika';
     document.body.appendChild(vendor);
+    // init global HUD (notification bell)
+    window.GlobalHUD?.init();
     // init first dashboard
     setTimeout(() => {
       const mod = dashModules['command']?.();
