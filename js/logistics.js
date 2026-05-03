@@ -194,35 +194,39 @@ window.DashLogistics = (() => {
       [[-1.27,116.83],[0.13,117.50],[-5.14,119.43]],
     ];
     pipelines.forEach((route, idx) => {
-      // Layer 1: glow halo (tebal, transparan)
+      // Layer 1: glow halo lebar
       L.polyline(route, {
-        color: '#00d4ff', weight: 10, opacity: 0.15,
+        color: '#00d4ff', weight: 22, opacity: 0.12,
         lineCap: 'round', lineJoin: 'round'
       }).addTo(maps.main);
 
-      // Layer 2: solid bright line
+      // Layer 2: outer glow medium
       L.polyline(route, {
-        color: '#00d4ff', weight: 3, opacity: 0.95,
+        color: '#00d4ff', weight: 12, opacity: 0.25,
         lineCap: 'round', lineJoin: 'round'
       }).addTo(maps.main);
 
-      // Layer 3: animated flowing dash (putih transparan di atas)
+      // Layer 3: solid bright line utama
+      L.polyline(route, {
+        color: '#00d4ff', weight: 6, opacity: 1,
+        lineCap: 'round', lineJoin: 'round'
+      }).addTo(maps.main);
+
+      // Layer 4: animated flowing dash putih
       const flowLine = L.polyline(route, {
-        color: '#ffffff', weight: 2.5, opacity: 0.75,
+        color: '#ffffff', weight: 4, opacity: 0.85,
         lineCap: 'round', lineJoin: 'round'
       }).addTo(maps.main);
 
-      // Terapkan animasi CSS ke SVG path element
       const el = flowLine.getElement();
       if (el) {
         el.classList.add('log-pipeline-dash');
-        // Offset tiap jalur agar animasinya tidak sinkron
         el.style.animationDelay = `${idx * 0.45}s`;
       }
 
-      // Layer 4: titik cahaya bergerak (pulse dot)
+      // Layer 5: pulse dot bergerak
       const pulseEl = L.polyline(route, {
-        color: '#00ffff', weight: 6, opacity: 0.9,
+        color: '#00ffff', weight: 10, opacity: 0.9,
         lineCap: 'round'
       }).addTo(maps.main);
       const pel = pulseEl.getElement();
