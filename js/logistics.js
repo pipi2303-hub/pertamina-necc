@@ -196,25 +196,25 @@ window.DashLogistics = (() => {
     pipelines.forEach((route, idx) => {
       // Layer 1: glow halo lebar
       L.polyline(route, {
-        color: '#00d4ff', weight: 22, opacity: 0.12,
+        color: '#2664f5', weight: 36, opacity: 0.15,
         lineCap: 'round', lineJoin: 'round'
       }).addTo(maps.main);
 
       // Layer 2: outer glow medium
       L.polyline(route, {
-        color: '#00d4ff', weight: 12, opacity: 0.25,
+        color: '#2664f5', weight: 20, opacity: 0.3,
         lineCap: 'round', lineJoin: 'round'
       }).addTo(maps.main);
 
       // Layer 3: solid bright line utama
       L.polyline(route, {
-        color: '#00d4ff', weight: 6, opacity: 1,
+        color: '#2664f5', weight: 10, opacity: 1,
         lineCap: 'round', lineJoin: 'round'
       }).addTo(maps.main);
 
       // Layer 4: animated flowing dash putih
       const flowLine = L.polyline(route, {
-        color: '#ffffff', weight: 4, opacity: 0.85,
+        color: '#ffffff', weight: 6, opacity: 0.85,
         lineCap: 'round', lineJoin: 'round'
       }).addTo(maps.main);
 
@@ -226,7 +226,7 @@ window.DashLogistics = (() => {
 
       // Layer 5: pulse dot bergerak
       const pulseEl = L.polyline(route, {
-        color: '#00ffff', weight: 10, opacity: 0.9,
+        color: '#6b9fff', weight: 14, opacity: 0.9,
         lineCap: 'round'
       }).addTo(maps.main);
       const pel = pulseEl.getElement();
