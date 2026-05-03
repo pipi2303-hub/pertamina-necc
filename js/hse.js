@@ -327,11 +327,12 @@ window.DashHSE = (() => {
       })
         .addTo(maps.main)
         .bindPopup(
-          `<div style="font-family:Inter,sans-serif;min-width:160px;">
+          `<div style="font-family:Inter,sans-serif;font-size:11px;min-width:165px;">
              <div style="font-weight:700;color:#111827;margin-bottom:4px;">${s.name}</div>
-             <div style="color:#4b5563;font-size:11px;">LTIF: <b style="color:${s.ltif<0.3?'#059669':'#d97706'}">${s.ltif}</b></div>
-             <div style="color:#4b5563;font-size:11px;">Days Without LTI: <b style="color:#111827">${s.days}</b></div>
-             <div style="color:#4b5563;font-size:11px;">Compliance: <b style="color:${s.comply>=95?'#059669':s.comply>=90?'#0284c7':'#d97706'}">${s.comply}%</b></div>
+             <div style="color:#4b5563;">LTIF: <b style="color:${s.ltif<0.3?'#059669':'#d97706'}">${s.ltif}</b></div>
+             <div style="color:#4b5563;">Days Without LTI: <b style="color:#111827">${s.days}</b></div>
+             <div style="color:#4b5563;margin-bottom:8px;">Compliance: <b style="color:${s.comply>=95?'#059669':s.comply>=90?'#0284c7':'#d97706'}">${s.comply}%</b></div>
+             <button onclick="window._assetDetail('hse','${s.name}','${s.ltif}','LTIF','${s.comply>=95?'▲ Compliant':'⚠ '+(100-s.comply)+'% Gap'}')" style="background:#ff4055;color:#fff;border:none;border-radius:4px;padding:4px 0;font-size:10px;font-weight:600;cursor:pointer;width:100%;font-family:Inter,sans-serif;">Detail &rarr;</button>
            </div>`
         );
     });
@@ -355,12 +356,13 @@ window.DashHSE = (() => {
       })
         .addTo(maps.main)
         .bindPopup(
-          `<div style="font-family:Inter,sans-serif;min-width:190px;">
-             <div style="font-weight:700;color:${color};margin-bottom:4px;">${inc.type}</div>
-             <div style="font-weight:600;color:#111827;margin-bottom:3px;">${inc.site}</div>
-             <div style="color:#4b5563;font-size:11px;margin-bottom:3px;">${inc.loc} · ${inc.time} WIB</div>
-             <div style="color:${color};font-size:11px;font-weight:600;margin-bottom:6px;">${inc.sev} · ${inc.sts}</div>
-             <div style="color:#374151;font-size:10.5px;line-height:1.4;">${inc.desc}</div>
+          `<div style="font-family:Inter,sans-serif;font-size:11px;min-width:200px;">
+             <div style="font-weight:700;color:${color};margin-bottom:3px;">${inc.type}</div>
+             <div style="font-weight:600;color:#111827;margin-bottom:2px;">${inc.site}</div>
+             <div style="color:#4b5563;margin-bottom:2px;">${inc.loc} · ${inc.time} WIB</div>
+             <div style="font-weight:700;color:${color};margin-bottom:5px;">${inc.sev} · ${inc.sts}</div>
+             <div style="color:#374151;font-size:10.5px;line-height:1.4;margin-bottom:8px;">${inc.desc}</div>
+             <button onclick="window._hseInc(${idx});document.querySelectorAll('.leaflet-popup').forEach(p=>p.remove())" style="background:#ff4055;color:#fff;border:none;border-radius:4px;padding:4px 0;font-size:10px;font-weight:600;cursor:pointer;width:100%;font-family:Inter,sans-serif;">View in Panel &rarr;</button>
            </div>`
         );
 

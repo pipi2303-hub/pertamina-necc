@@ -272,14 +272,14 @@ window.DashLogistics = (() => {
 
     // ── Node markers: hijau = depot, oranye = terminal, merah = alert ─
     const NODES = [
-      { lat:-6.21, lng:106.85, color:'#00d4a0', label:'Jakarta Depot' },
-      { lat:-7.25, lng:112.75, color:'#00d4a0', label:'Surabaya Depot' },
-      { lat:-1.27, lng:116.83, color:'#00d4a0', label:'Balikpapan Depot' },
-      { lat: 3.58, lng: 98.67, color:'#00d4a0', label:'Medan Depot' },
-      { lat:-5.14, lng:119.43, color:'#00d4a0', label:'Makassar Depot' },
-      { lat: 0.13, lng:117.50, color:'#f5a623', label:'Bontang Terminal' },
-      { lat:-2.99, lng:104.76, color:'#f5a623', label:'Palembang Terminal' },
-      { lat: 1.67, lng:101.44, color:'#f5a623', label:'Dumai Terminal' },
+      { lat:-6.21, lng:106.85, color:'#00d4a0', label:'Jakarta Depot',      type:'Depot',    val:'15,200', unit:'KL', delta:'▲ 94%' },
+      { lat:-7.25, lng:112.75, color:'#00d4a0', label:'Surabaya Depot',     type:'Depot',    val:'12,800', unit:'KL', delta:'▲ 88%' },
+      { lat:-1.27, lng:116.83, color:'#00d4a0', label:'Balikpapan Depot',   type:'Depot',    val:'9,600',  unit:'KL', delta:'▲ 81%' },
+      { lat: 3.58, lng: 98.67, color:'#00d4a0', label:'Medan Depot',        type:'Depot',    val:'8,400',  unit:'KL', delta:'▲ 79%' },
+      { lat:-5.14, lng:119.43, color:'#00d4a0', label:'Makassar Depot',     type:'Depot',    val:'7,100',  unit:'KL', delta:'▲ 72%' },
+      { lat: 0.13, lng:117.50, color:'#f5a623', label:'Bontang Terminal',   type:'Terminal', val:'28,500', unit:'KL', delta:'▲ 97%' },
+      { lat:-2.99, lng:104.76, color:'#f5a623', label:'Palembang Terminal', type:'Terminal', val:'22,100', unit:'KL', delta:'▲ 89%' },
+      { lat: 1.67, lng:101.44, color:'#f5a623', label:'Dumai Terminal',     type:'Terminal', val:'18,700', unit:'KL', delta:'▲ 85%' },
     ];
     NODES.forEach(n => {
       const html = `<div style="
@@ -288,11 +288,17 @@ window.DashLogistics = (() => {
         box-shadow:0 0 10px ${n.color},0 0 22px ${n.color}60;
         border:2px solid rgba(255,255,255,0.55);
       "></div>`;
+      const accentDark = n.color === '#00d4a0' ? '#059669' : '#d97706';
       L.marker([n.lat,n.lng], {
         icon: L.divIcon({ className:'', html, iconSize:[13,13], iconAnchor:[6.5,6.5] }),
         zIndexOffset: 600
       }).addTo(maps.main)
-        .bindPopup(`<div style="background:#111c35;border:1px solid #2a5298;border-radius:6px;padding:8px 10px;color:#eef2ff;font-size:11px;font-family:Inter,sans-serif;">${n.label}</div>`);
+        .bindPopup(`<div style="font-family:Inter,sans-serif;font-size:11px;padding:2px;min-width:160px;">
+          <div style="font-weight:700;color:#111827;margin-bottom:2px;">${n.label}</div>
+          <div style="font-size:10px;color:#4b5563;margin-bottom:1px;">${n.type} &nbsp;·&nbsp; ${n.val} ${n.unit}</div>
+          <div style="font-size:10px;font-weight:700;color:${accentDark};margin-bottom:8px;">${n.delta} Utilization</div>
+          <button onclick="window._assetDetail('logistics','${n.label}','${n.val}','${n.unit}','${n.delta}')" style="background:#a855f7;color:#fff;border:none;border-radius:4px;padding:4px 0;font-size:10px;font-weight:600;cursor:pointer;width:100%;font-family:Inter,sans-serif;">Detail &rarr;</button>
+        </div>`);
     });
 
     // Alert node merah berkedip

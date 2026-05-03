@@ -262,6 +262,19 @@ window.DrillDown = (() => {
    Alert Action Handler — shared across all dashboards
    Called by Investigate / Acknowledge / Escalate buttons
    ============================================================ */
+/* ============================================================
+   Asset Detail Panel — called from Leaflet popup "Detail →"
+   ============================================================ */
+window._assetDetail = function(domain, title, value, unit, delta) {
+  document.querySelectorAll('.leaflet-popup').forEach(p => p.remove());
+  const COLORS = { logistics:'#a855f7', distribution:'#ff7b00', hse:'#ff4055' };
+  window.DrillDown.open({
+    title, domain, value, unit, delta,
+    color: COLORS[domain] || '#1a7fe8',
+    type: 'kpi',
+  });
+};
+
 window._alertAct = function(action, btn) {
   const item = btn.closest('.alert-item, .hse-inc-row, .leak-alert-row');
   if (!item || item.dataset.actioned) return;

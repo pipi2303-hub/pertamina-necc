@@ -207,27 +207,35 @@ window.DashDistribution = (() => {
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains:'abcd', maxZoom:19 }).addTo(maps.main);
 
     const spbus = [
-      { name:'SPBU Serpong 01',   lat:-6.31, lng:106.66, status:'online' },
-      { name:'SPBU Tangerang 02', lat:-6.18, lng:106.63, status:'online' },
-      { name:'SPBU Jakarta 03',   lat:-6.21, lng:106.85, status:'alert' },
-      { name:'SPBU Bekasi 04',    lat:-6.24, lng:107.00, status:'online' },
-      { name:'SPBU Depok 05',     lat:-6.40, lng:106.81, status:'offline' },
-      { name:'SPBU Bogor 06',     lat:-6.60, lng:106.79, status:'online' },
-      { name:'SPBU Ciawi 07',     lat:-6.68, lng:106.89, status:'online' },
-      { name:'SPBU Cikarang 08',  lat:-6.26, lng:107.14, status:'alert' },
-      { name:'SPBU Cirebon 09',   lat:-6.71, lng:108.55, status:'online' },
-      { name:'SPBU Bandung 10',   lat:-6.91, lng:107.61, status:'online' },
-      { name:'SPBU Sukabumi 11',  lat:-6.92, lng:106.93, status:'online' },
-      { name:'SPBU Karawang 12',  lat:-6.32, lng:107.33, status:'online' },
+      { name:'SPBU Serpong 01',   lat:-6.31, lng:106.66, status:'online',  vol:'1,240', sales:'Rp 8.4M' },
+      { name:'SPBU Tangerang 02', lat:-6.18, lng:106.63, status:'online',  vol:'1,180', sales:'Rp 7.9M' },
+      { name:'SPBU Jakarta 03',   lat:-6.21, lng:106.85, status:'alert',   vol:'1,580', sales:'Rp 10.2M' },
+      { name:'SPBU Bekasi 04',    lat:-6.24, lng:107.00, status:'online',  vol:'980',   sales:'Rp 6.5M' },
+      { name:'SPBU Depok 05',     lat:-6.40, lng:106.81, status:'offline', vol:'0',     sales:'Rp 0' },
+      { name:'SPBU Bogor 06',     lat:-6.60, lng:106.79, status:'online',  vol:'1,120', sales:'Rp 7.2M' },
+      { name:'SPBU Ciawi 07',     lat:-6.68, lng:106.89, status:'online',  vol:'890',   sales:'Rp 5.8M' },
+      { name:'SPBU Cikarang 08',  lat:-6.26, lng:107.14, status:'alert',   vol:'1,340', sales:'Rp 8.9M' },
+      { name:'SPBU Cirebon 09',   lat:-6.71, lng:108.55, status:'online',  vol:'760',   sales:'Rp 4.9M' },
+      { name:'SPBU Bandung 10',   lat:-6.91, lng:107.61, status:'online',  vol:'1,450', sales:'Rp 9.4M' },
+      { name:'SPBU Sukabumi 11',  lat:-6.92, lng:106.93, status:'online',  vol:'680',   sales:'Rp 4.3M' },
+      { name:'SPBU Karawang 12',  lat:-6.32, lng:107.33, status:'online',  vol:'1,060', sales:'Rp 6.9M' },
     ];
 
-    const cMap = { online:'#00d4a0', offline:'#4a5f82', alert:'#f5a623' };
+    const cMap     = { online:'#00d4a0', offline:'#4a5f82', alert:'#f5a623' };
+    const cMapDark = { online:'#059669',  offline:'#6b7280', alert:'#d97706' };
+    const deltaMap = { online:'▲ Online', offline:'● Offline', alert:'⚠ Alert' };
     spbus.forEach(s => {
-      const c = cMap[s.status];
-      const html = `<div style="background:${c}20;border:2px solid ${c};border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:9px;box-shadow:0 0 8px ${c}50;">⛽</div>`;
+      const c     = cMap[s.status];
+      const cDark = cMapDark[s.status];
+      const html  = `<div style="background:${c}20;border:2px solid ${c};border-radius:50%;width:20px;height:20px;display:flex;align-items:center;justify-content:center;font-size:9px;box-shadow:0 0 8px ${c}50;">⛽</div>`;
       L.marker([s.lat,s.lng], { icon: L.divIcon({ className:'', html, iconSize:[20,20], iconAnchor:[10,10] }) })
         .addTo(maps.main)
-        .bindPopup(`<div style="background:#111c35;border:1px solid #2a5298;border-radius:6px;padding:8px;color:#eef2ff;font-size:11px;font-family:Inter,sans-serif;"><strong>${s.name}</strong><br><span style="color:${c};">${s.status.toUpperCase()}</span></div>`);
+        .bindPopup(`<div style="font-family:Inter,sans-serif;font-size:11px;padding:2px;min-width:160px;">
+          <div style="font-weight:700;color:#111827;margin-bottom:2px;">${s.name}</div>
+          <div style="font-size:10px;font-weight:700;color:${cDark};margin-bottom:1px;">${s.status.toUpperCase()}</div>
+          <div style="font-size:10px;color:#4b5563;margin-bottom:8px;">${s.vol} KL/hari &nbsp;·&nbsp; ${s.sales}</div>
+          <button onclick="window._assetDetail('distribution','${s.name}','${s.vol}','KL/hari','${deltaMap[s.status]}')" style="background:#ff7b00;color:#fff;border:none;border-radius:4px;padding:4px 0;font-size:10px;font-weight:600;cursor:pointer;width:100%;font-family:Inter,sans-serif;">Detail &rarr;</button>
+        </div>`);
     });
 
     // Heat map zones (simplified colored circles)
