@@ -54,7 +54,7 @@ window.DashUpstream = (() => {
           { label:'Flaring Status', val:'Minimal', unit:'', delta:'✓ Within limit', color:'yellow', id:'flare' },
           { label:'Production Deviation', val:'+2.1', unit:'%', delta:'▲ vs. target', color:'orange', id:'dev' },
         ].map(k => `
-        <div class="kpi-card ${k.color}">
+        <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="upstream" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
           <div class="kpi-label">${k.label}</div>
           <div class="kpi-value">${k.val}<span class="unit">${k.unit}</span></div>
           <div class="kpi-delta up">${k.delta}</div>

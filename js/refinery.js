@@ -63,7 +63,7 @@ window.DashRefinery = (() => {
           { label:'Energy Consumption',  val:'580',     unit:'MJ/bbl', delta:'▼ −2.1%', color:'green', id:'ec' },
           { label:'Output Deviation',    val:'+1.2',    unit:'%',   delta:'▲ Above plan', color:'orange', id:'od' },
         ].map(k => `
-        <div class="kpi-card ${k.color}">
+        <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="refinery" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
           <div class="kpi-label">${k.label}</div>
           <div class="kpi-value">${k.val}<span class="unit">${k.unit}</span></div>
           <div class="kpi-delta ${k.delta.startsWith('▲')?'up':k.delta.startsWith('▼')?'down':'warn'}">${k.delta}</div>

@@ -53,7 +53,7 @@ window.DashStorage = (() => {
           { label:'Volume Variance',   val:'+1,200',    unit:'KL',    delta:'✓ Within tolerance', color:'green', id:'vv' },
           { label:'Unauthorized Move', val:'0',         unit:'',      delta:'✓ No alerts', color:'green', id:'um' },
         ].map(k => `
-        <div class="kpi-card ${k.color}">
+        <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="storage" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
           <div class="kpi-label">${k.label}</div>
           <div class="kpi-value">${k.val}<span class="unit">${k.unit}</span></div>
           <div class="kpi-delta ${k.delta.startsWith('▲')||k.delta.startsWith('✓')?'up':'warn'}">${k.delta}</div>

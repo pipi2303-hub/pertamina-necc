@@ -95,7 +95,7 @@ window.DashHSE = (() => {
           { label:'CO₂ Emissions MTD',   val:'847',   unit:'KT',   delta:'▼ -3.1% vs target',   color:'cyan',   id:'co2'  },
           { label:'Active PTW',          val:'234',   unit:'',     delta:'42 High Risk',          color:'purple', id:'ptw'  },
         ].map(k => `
-        <div class="kpi-card ${k.color}">
+        <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="hse" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
           <div class="kpi-label">${k.label}</div>
           <div class="kpi-value">${k.val}<span class="unit"> ${k.unit}</span></div>
           <div class="kpi-delta ${k.delta.startsWith('▲')?'up':k.delta.startsWith('▼')?'down':'warn'}">${k.delta}</div>

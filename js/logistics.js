@@ -43,7 +43,7 @@ window.DashLogistics = (() => {
           { label:'Delivery Variance', val:'0.5',   unit:'%',   delta:'✓ Within limit', color:'green', id:'dv' },
           { label:'Critical Alerts',   val:'3',     unit:'',    delta:'⚠ Requires action', color:'red', id:'ca' },
         ].map(k => `
-        <div class="kpi-card ${k.color}">
+        <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="logistics" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
           <div class="kpi-label">${k.label}</div>
           <div class="kpi-value">${k.val}<span class="unit">${k.unit}</span></div>
           <div class="kpi-delta ${k.delta.startsWith('▲')||k.delta.startsWith('✓')?'up':k.delta.startsWith('▼')?'down':'warn'}">${k.delta}</div>

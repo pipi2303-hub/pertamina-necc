@@ -42,7 +42,7 @@ window.DashSPKLU = (() => {
           { label:'Station Downtime',     val:'5%',        unit:'',    delta:'⚠ 18 Stations', color:'red', id:'sd' },
           { label:'Revenue Today',        val:'IDR 15.5',  unit:'M',   delta:'▲ +8.2%', color:'purple', id:'rv' },
         ].map(k => `
-        <div class="kpi-card ${k.color}">
+        <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="spklu" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
           <div class="kpi-label">${k.label}</div>
           <div class="kpi-value">${k.val}<span class="unit">${k.unit}</span></div>
           <div class="kpi-delta ${k.delta.startsWith('▲')?'up':k.delta.startsWith('▼')?'down':'warn'}">${k.delta}</div>

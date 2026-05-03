@@ -57,7 +57,7 @@ window.DashFinancial = (() => {
           { label:'EBITDA MTD',      val:'IDR 10.3', unit:'T', delta:'▲ +5.4% vs last month',  color:'purple', id:'ebd'  },
           { label:'Free Cash Flow',  val:'IDR 3.2',  unit:'T', delta:'▲ +2.1% YTD',            color:'yellow', id:'fcf'  },
         ].map(k => `
-        <div class="kpi-card ${k.color}">
+        <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="financial" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
           <div class="kpi-label">${k.label}</div>
           <div class="kpi-value">${k.val}<span class="unit"> ${k.unit}</span></div>
           <div class="kpi-delta ${k.delta.startsWith('▲')?'up':k.delta.startsWith('▼')?'down':'warn'}">${k.delta}</div>

@@ -51,7 +51,7 @@ window.DashDistribution = (() => {
           { label:'Stock vs Sales Var.',   val:'0.05',    unit:'%',  delta:'✓ Within limit', color:'green', id:'sv' },
           { label:'Abnormal Transactions', val:'45',      unit:'',   delta:'⚠ Alert', color:'red', id:'at' },
         ].map(k => `
-        <div class="kpi-card ${k.color}">
+        <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="distribution" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
           <div class="kpi-label">${k.label}</div>
           <div class="kpi-value">${k.val}<span class="unit">${k.unit}</span></div>
           <div class="kpi-delta ${k.delta.startsWith('▲')||k.delta.startsWith('✓')?'up':'warn'}">${k.delta}</div>

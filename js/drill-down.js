@@ -234,5 +234,26 @@ window.DrillDown = (() => {
   /* ESC to close */
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
 
+  /* ── Event delegation — all .kpi-card.dd-clickable ────────── */
+  const CARD_COLORS = {
+    green:'#00d4a0', blue:'#1a7fe8', cyan:'#00c8ff',
+    yellow:'#f5a623', orange:'#ff7b00', red:'#ff4055', purple:'#a855f7',
+  };
+
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.kpi-card.dd-clickable');
+    if (!card) return;
+    const d = card.dataset;
+    open({
+      title:  d.ddTitle  || '—',
+      domain: d.ddDomain || 'command',
+      value:  d.ddValue  || '',
+      unit:   d.ddUnit   || '',
+      delta:  d.ddDelta  || '',
+      color:  CARD_COLORS[d.ddColor] || '#1a7fe8',
+      type:   'kpi',
+    });
+  });
+
   return { open, close };
 })();

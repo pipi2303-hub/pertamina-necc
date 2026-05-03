@@ -45,7 +45,7 @@ window.DashCommand = (() => {
   <!-- KPI Row -->
   <div class="cmd-kpi-row">
     ${kpiCards.map(k => `
-    <div class="kpi-card ${k.color}">
+    <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="command" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
       <div class="kpi-label">${k.label}</div>
       <div class="kpi-value">${k.val}<span class="unit">${k.unit}</span></div>
       <div class="kpi-delta ${k.dir}">${k.dir === 'up' ? '▲' : k.dir === 'down' ? '▼' : '⚠'} ${k.delta}</div>
@@ -225,7 +225,7 @@ window.DashCommand = (() => {
     ];
     return `<div class="cmd-kpi-row">
       ${cards.map(k => `
-      <div class="kpi-card ${k.color}">
+      <div class="kpi-card ${k.color} dd-clickable" data-dd-title="${k.label}" data-dd-domain="command" data-dd-value="${(k.val||'').toString().replace(/<[^>]*>/g,'')}" data-dd-unit="${k.unit||''}" data-dd-delta="${k.delta||''}" data-dd-color="${k.color}">
         <div class="kpi-label">${k.label}</div>
         <div class="kpi-value" style="${k.id==='alerts'?'font-size:16px;color:var(--red);':''}">${k.val}<span class="unit">${k.unit}</span></div>
         <div class="kpi-delta ${k.dir}">${k.delta}</div>
