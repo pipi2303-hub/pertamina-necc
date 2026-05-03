@@ -187,14 +187,49 @@ window.DashLogistics = (() => {
       .setView([-2.5, 117], 4);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains:'abcd', maxZoom:19 }).addTo(maps.main);
 
-    // Pipeline routes
+    // Pipeline routes — 3-layer: glow + solid bright + animated dash
     const pipelines = [
       [[-6.21,106.85],[-7.72,109.01],[-7.25,112.75]],
       [[-2.99,104.76],[1.67,101.44],[3.58,98.67]],
       [[-1.27,116.83],[0.13,117.50],[-5.14,119.43]],
     ];
-    pipelines.forEach(route => {
-      L.polyline(route, { color:'#1a7fe8', weight:2, opacity:0.5 }).addTo(maps.main);
+    pipelines.forEach((route, idx) => {
+      // Layer 1: glow halo (tebal, transparan)
+      L.polyline(route, {
+        color: '#00d4ff', weight: 10, opacity: 0.15,
+        lineCap: 'round', lineJoin: 'round'
+      }).addTo(maps.main);
+
+      // Layer 2: solid bright line
+      L.polyline(route, {
+        color: '#00d4ff', weight: 3, opacity: 0.95,
+        lineCap: 'round', lineJoin: 'round'
+      }).addTo(maps.main);
+
+      // Layer 3: animated flowing dash (putih transparan di atas)
+      const flowLine = L.polyline(route, {
+        color: '#ffffff', weight: 2.5, opacity: 0.75,
+        lineCap: 'round', lineJoin: 'round'
+      }).addTo(maps.main);
+
+      // Terapkan animasi CSS ke SVG path element
+      const el = flowLine.getElement();
+      if (el) {
+        el.classList.add('log-pipeline-dash');
+        // Offset tiap jalur agar animasinya tidak sinkron
+        el.style.animationDelay = `${idx * 0.45}s`;
+      }
+
+      // Layer 4: titik cahaya bergerak (pulse dot)
+      const pulseEl = L.polyline(route, {
+        color: '#00ffff', weight: 6, opacity: 0.9,
+        lineCap: 'round'
+      }).addTo(maps.main);
+      const pel = pulseEl.getElement();
+      if (pel) {
+        pel.classList.add('log-pipeline-pulse');
+        pel.style.animationDelay = `${idx * 0.7}s`;
+      }
     });
 
     // Depots
@@ -217,7 +252,7 @@ window.DashLogistics = (() => {
       { pts: [[-7.5,110.2],[-7.4,110.6],[-7.3,111.0]] },
     ];
     trucks.forEach(t => {
-      L.polyline(t.pts, { color:'#ff4055', weight:2, opacity:0.7, dashArray:'3,4' }).addTo(maps.main);
+      L.polyline(t.pts, { color:'#ff4055', weight:3, opacity:0.9, dashArray:'5,5', lineCap:'round' }).addTo(maps.main);
       const last = t.pts[t.pts.length-1];
       const html = `<div style="background:#ff405520;border:2px solid #ff4055;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:9px;">🚛</div>`;
       L.marker(last, { icon: L.divIcon({ className:'', html, iconSize:[18,18], iconAnchor:[9,9] }) }).addTo(maps.main);

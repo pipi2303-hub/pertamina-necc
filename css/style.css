@@ -1131,6 +1131,25 @@ html, body {
   100% { left: 100%; }
 }
 
+/* ─── LOGISTICS MAP — ANIMATED PIPELINE SVG PATH ─────────── */
+.log-pipeline-dash {
+  stroke-dasharray: 18, 9;
+  animation: log-flow 1.4s linear infinite;
+}
+@keyframes log-flow {
+  to { stroke-dashoffset: -27; }
+}
+
+.log-pipeline-pulse {
+  stroke-dasharray: 1, 28;
+  animation: log-pulse 2.2s ease-in-out infinite;
+}
+@keyframes log-pulse {
+  0%   { stroke-dashoffset: 0;   opacity: 0.9; }
+  50%  { stroke-dashoffset: -60; opacity: 1;   }
+  100% { stroke-dashoffset: -120; opacity: 0.9; }
+}
+
 /* ─── VESSEL TRACK ────────────────────────────────────────── */
 .vessel-card {
   display: flex;
