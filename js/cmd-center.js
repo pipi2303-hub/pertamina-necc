@@ -129,7 +129,12 @@ window.DashCommand = (() => {
       <div class="alert-body">
         <div class="alert-title">${a.level === 'critical' ? '<span class="blink" style="color:var(--red);">●</span> ' : a.level === 'warning' ? '<span style="color:var(--yellow);">●</span> ' : '<span style="color:var(--green);">●</span> '}${a.title}</div>
         <div class="alert-meta"><span>${a.loc}</span> · Severity: ${a.severity} · Est. Loss Avoided: ${a.loss}</div>
-        <div class="alert-meta" style="margin-top:2px;">Status: <span class="badge ${a.status.toLowerCase()}">${a.status}</span> <span style="margin-left:6px;">${a.time}</span></div>
+        <div class="alert-meta" style="margin-top:2px;">Status: <span class="badge sts-badge ${a.status.toLowerCase()}">${a.status}</span> <span style="margin-left:6px;">${a.time}</span></div>
+        <div class="alert-act-row">
+          <button class="alert-act-btn" data-action="investigate" onclick="window._alertAct('investigate',this)">Investigate</button>
+          <button class="alert-act-btn" data-action="ack"         onclick="window._alertAct('ack',this)">Acknowledge</button>
+          <button class="alert-act-btn" data-action="escalate"    onclick="window._alertAct('escalate',this)">Escalate</button>
+        </div>
       </div>
     </div>`;
   }
@@ -312,8 +317,13 @@ window.DashCommand = (() => {
             <div class="alert-meta"><span>${a.loc}</span> · Severity: <strong>${a.severity}</strong></div>
             <div class="alert-meta" style="margin-top:3px;display:flex;align-items:center;gap:6px;">
               Est. Loss Avoided: <strong>${a.loss}</strong>
-              <span class="badge ${a.status.toLowerCase()}">${a.status}</span>
+              <span class="badge sts-badge ${a.status.toLowerCase()}">${a.status}</span>
               <span style="margin-left:auto;color:var(--text3);">${a.time}</span>
+            </div>
+            <div class="alert-act-row">
+              <button class="alert-act-btn" data-action="investigate" onclick="window._alertAct('investigate',this)">Investigate</button>
+              <button class="alert-act-btn" data-action="ack"         onclick="window._alertAct('ack',this)">Acknowledge</button>
+              <button class="alert-act-btn" data-action="escalate"    onclick="window._alertAct('escalate',this)">Escalate</button>
             </div>
           </div>
         </div>`).join('')}

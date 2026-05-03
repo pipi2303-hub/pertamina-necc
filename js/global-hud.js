@@ -200,5 +200,5 @@ window.GlobalHUD = (() => {
     scheduleNext();
   }
 
-  return { init, clearAll, close: closeDropdown };
+  return { init, clearAll, close: closeDropdown, addAlert };
 })();

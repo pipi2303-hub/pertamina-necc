@@ -144,9 +144,15 @@ window.DashHSE = (() => {
                 <div style="font-size:11px;color:var(--text0);font-weight:600;margin-bottom:2px;">${inc.site}</div>
                 <div style="font-size:10px;color:var(--text2);">${inc.loc} · ${inc.time} WIB</div>
                 <div style="display:flex;align-items:center;justify-content:space-between;margin-top:4px;">
-                  ${badge(inc.sts, stsColor(inc.sts))}
+                  <span class="sts-badge" style="font-size:9.5px;padding:2px 7px;border-radius:3px;background:${stsColor(inc.sts)}22;color:${stsColor(inc.sts)};font-weight:700;border:1px solid ${stsColor(inc.sts)}44;white-space:nowrap;">${inc.sts}</span>
                   ${inc.injure > 0 ? `<span style="font-size:9.5px;color:#ff4055;font-weight:700;">⚠ ${inc.injure} Korban</span>` : `<span style="font-size:9.5px;color:var(--text3);">Durasi: ${inc.dur}</span>`}
                 </div>
+                ${inc.sts !== 'CLOSED' && inc.sts !== 'TERTANGANI' ? `
+                <div class="alert-act-row">
+                  <button class="alert-act-btn" data-action="investigate" onclick="window._alertAct('investigate',this);event.stopPropagation()">Investigate</button>
+                  <button class="alert-act-btn" data-action="ack"         onclick="window._alertAct('ack',this);event.stopPropagation()">Acknowledge</button>
+                  <button class="alert-act-btn" data-action="escalate"    onclick="window._alertAct('escalate',this);event.stopPropagation()">Escalate</button>
+                </div>` : ''}
               </div>`).join('')}
             </div>
           </div>

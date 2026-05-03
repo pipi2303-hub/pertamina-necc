@@ -257,3 +257,42 @@ window.DrillDown = (() => {
 
   return { open, close };
 })();
+
+/* ============================================================
+   Alert Action Handler — shared across all dashboards
+   Called by Investigate / Acknowledge / Escalate buttons
+   ============================================================ */
+window._alertAct = function(action, btn) {
+  const item = btn.closest('.alert-item, .hse-inc-row, .leak-alert-row');
+  if (!item || item.dataset.actioned) return;
+  item.dataset.actioned = 'true';
+
+  item.querySelectorAll('.alert-act-btn').forEach(b => { b.disabled = true; });
+  btn.disabled = false;
+  btn.classList.add('done');
+
+  const MAP = {
+    investigate: { label:'Investigasi', color:'#00c8ff' },
+    ack:         { label:'Acknowledged', color:'#00d4a0' },
+    escalate:    { label:'Escalated',   color:'#ff7b00' },
+  };
+  const m = MAP[action];
+  const sts = item.querySelector('.sts-badge');
+  if (sts && m) {
+    sts.textContent = m.label;
+    sts.style.color = m.color;
+    sts.style.background = m.color + '22';
+    sts.style.borderColor = m.color + '44';
+  }
+
+  if (window.GlobalHUD?.addAlert) {
+    const nameEl = item.querySelector('.alert-title, .alert-name, strong');
+    const title  = nameEl ? nameEl.textContent.trim().slice(0, 60) : 'Alert';
+    const LABELS = { investigate:'INVESTIGASI DIMULAI', ack:'DI-ACKNOWLEDGE', escalate:'DI-ESKALASI' };
+    window.GlobalHUD.addAlert({
+      sev: action === 'escalate' ? 'warn' : 'info',
+      dom: 'Command',
+      msg: `Alert ${LABELS[action]}: ${title}`,
+    });
+  }
+};

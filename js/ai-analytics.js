@@ -98,20 +98,26 @@ window.DashAI = (() => {
         </div>
         <div style="flex:1;overflow-y:auto">
           ${ALERTS.map((a,i)=>`
-          <div onclick="window._aiLeak(${i})" id="leak-row-${i}" style="padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;${i===0?'background:rgba(255,64,85,0.07);border-left:3px solid #ff4055':''}">
+          <div class="leak-alert-row" onclick="window._aiLeak(${i})" id="leak-row-${i}" style="padding:11px 14px;border-bottom:1px solid var(--border);cursor:pointer;transition:background .15s;${i===0?'background:rgba(255,64,85,0.07);border-left:3px solid #ff4055':''}">
             <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:3px">
               <div style="display:flex;align-items:center;gap:6px">
                 <span style="width:8px;height:8px;border-radius:50%;background:${svc(a.sev)};display:inline-block;flex-shrink:0"></span>
-                <strong style="font-size:12px;color:var(--text0)">${a.name}</strong>
+                <strong class="alert-name" style="font-size:12px;color:var(--text0)">${a.name}</strong>
               </div>
               <span style="font-size:10px;font-weight:700;padding:2px 7px;border-radius:4px;background:${svc(a.sev)}22;color:${svc(a.sev)};border:1px solid ${svc(a.sev)}44">${a.sev}</span>
             </div>
             <div style="font-size:11px;color:var(--text2);margin:3px 0 3px 14px">${a.loc}</div>
             <div style="display:flex;justify-content:space-between;margin-left:14px">
               <span style="font-size:11px;font-weight:600;color:#ff4055">ΔP: -${a.dp} bar</span>
-              <span style="font-size:10px;font-weight:600;color:${sc2(a.sts)}">${a.sts}</span>
+              <span class="sts-badge" style="font-size:10px;font-weight:600;color:${sc2(a.sts)}">${a.sts}</span>
               <span style="font-size:10px;color:var(--text3)">AI: ${a.ai}%</span>
             </div>
+            ${a.sts !== 'NORMAL' && a.sts !== 'FALSE POSITIVE' ? `
+            <div class="alert-act-row" style="margin-left:14px;">
+              <button class="alert-act-btn" data-action="investigate" onclick="window._alertAct('investigate',this);event.stopPropagation()">Investigate</button>
+              <button class="alert-act-btn" data-action="ack"         onclick="window._alertAct('ack',this);event.stopPropagation()">Acknowledge</button>
+              <button class="alert-act-btn" data-action="escalate"    onclick="window._alertAct('escalate',this);event.stopPropagation()">Escalate</button>
+            </div>` : ''}
           </div>`).join('')}
         </div>
       </div>

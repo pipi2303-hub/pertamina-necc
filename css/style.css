@@ -1733,6 +1733,37 @@ html, body {
   padding: 48px; text-align: center; color: var(--text3); font-size: 12px;
 }
 
+/* ── Alert Action Buttons ────────────────────────────────── */
+.alert-act-row {
+  display: flex;
+  gap: 5px;
+  margin-top: 7px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(42,82,152,0.2);
+}
+.alert-act-btn {
+  font-size: 9.5px;
+  font-family: inherit;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.12s;
+  letter-spacing: 0.3px;
+  background: transparent;
+}
+.alert-act-btn[data-action="investigate"] { color:#00c8ff; border:1px solid rgba(0,200,255,0.4); }
+.alert-act-btn[data-action="ack"]         { color:#00d4a0; border:1px solid rgba(0,212,160,0.4); }
+.alert-act-btn[data-action="escalate"]    { color:#ff7b00; border:1px solid rgba(255,123,0,0.4); }
+.alert-act-btn[data-action="investigate"]:not(:disabled):hover { background:rgba(0,200,255,0.12); }
+.alert-act-btn[data-action="ack"]:not(:disabled):hover         { background:rgba(0,212,160,0.12); }
+.alert-act-btn[data-action="escalate"]:not(:disabled):hover    { background:rgba(255,123,0,0.12); }
+.alert-act-btn:disabled { opacity:0.25; cursor:default; }
+.alert-act-btn.done { opacity:1 !important; }
+.alert-act-btn[data-action="investigate"].done { background:rgba(0,200,255,0.18); }
+.alert-act-btn[data-action="ack"].done         { background:rgba(0,212,160,0.18); }
+.alert-act-btn[data-action="escalate"].done    { background:rgba(255,123,0,0.18); }
+
 /* KPI card hover — signals clickability */
 .kpi-card.dd-clickable {
   cursor: pointer;
