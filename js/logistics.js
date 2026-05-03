@@ -181,97 +181,168 @@ window.DashLogistics = (() => {
     intervals.push(iid);
   }
 
+  // Buat polygon berbentuk ellipse untuk zone overlay
+  function makeEllipse(centerLat, centerLng, rxKm, ryKm, rotDeg, steps = 48) {
+    const pts = [];
+    const rot = rotDeg * Math.PI / 180;
+    const rx = rxKm / 111.32;
+    const ry = ryKm / 111.32;
+    for (let i = 0; i <= steps; i++) {
+      const a = (i / steps) * 2 * Math.PI;
+      const x = rx * Math.cos(a);
+      const y = ry * Math.sin(a);
+      const rx2 = x * Math.cos(rot) - y * Math.sin(rot);
+      const ry2 = x * Math.sin(rot) + y * Math.cos(rot);
+      pts.push([centerLat + ry2, centerLng + rx2 / Math.cos(centerLat * Math.PI / 180)]);
+    }
+    return pts;
+  }
+
   function initMap() {
     if (maps.main) return;
     maps.main = L.map('log-map', { zoomControl: false, attributionControl: true })
       .setView([-2.5, 117], 4);
     L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', { subdomains:'abcd', maxZoom:19 }).addTo(maps.main);
 
-    // Pipeline routes — 3-layer: glow + solid bright + animated dash
-    const pipelines = [
-      [[-6.21,106.85],[-7.72,109.01],[-7.25,112.75]],
-      [[-2.99,104.76],[1.67,101.44],[3.58,98.67]],
-      [[-1.27,116.83],[0.13,117.50],[-5.14,119.43]],
+    // ── Zone ellipses (island silhouettes seperti referensi) ──────────
+    const zones = [
+      { lat:-1.5, lng:102,   rx:520, ry:160, rot:-40 },  // Sumatra
+      { lat:-7,   lng:110,   rx:480, ry:130, rot:-10 },  // Java
+      { lat: 0,   lng:114,   rx:400, ry:350, rot: 15 },  // Kalimantan
+      { lat:-2,   lng:121,   rx:280, ry:180, rot: 60 },  // Sulawesi
+      { lat:-4,   lng:136,   rx:350, ry:220, rot:-20 },  // Papua
     ];
-    pipelines.forEach((route, idx) => {
-      // Layer 1: glow halo lebar
-      L.polyline(route, {
-        color: '#2664f5', weight: 36, opacity: 0.15,
-        lineCap: 'round', lineJoin: 'round'
+    zones.forEach(z => {
+      L.polygon(makeEllipse(z.lat, z.lng, z.rx, z.ry, z.rot), {
+        color: '#2664f5', weight: 1, opacity: 0.35,
+        fillColor: '#000c2a', fillOpacity: 0.35,
+        interactive: false
+      }).addTo(maps.main);
+    });
+
+    // ── Route definitions: biru, hijau, oranye ────────────────────────
+    const ROUTES = [
+      // Biru — pipeline utama
+      { pts:[[-6.21,106.85],[-7.72,109.01],[-7.25,112.75]], color:'#2664f5', speed:0.0018 },
+      { pts:[[-2.99,104.76],[1.67,101.44],[3.58,98.67]],   color:'#2664f5', speed:0.0014 },
+      // Hijau — jalur distribusi
+      { pts:[[-1.27,116.83],[0.13,117.50],[-5.14,119.43]], color:'#00d4a0', speed:0.0016 },
+      { pts:[[-7.25,112.75],[-4.5,115.0],[-1.27,116.83]], color:'#00d4a0', speed:0.0020 },
+      // Oranye — truck / last-mile
+      { pts:[[-6.21,106.85],[-6.5,107.8],[-6.9,108.5],[-7.25,112.75]], color:'#f5a623', speed:0.0022 },
+    ];
+
+    const animDots = [];
+
+    ROUTES.forEach((route, idx) => {
+      // Layer 1: glow halo
+      L.polyline(route.pts, {
+        color: route.color, weight: 16, opacity: 0.12,
+        lineCap:'round', lineJoin:'round', interactive:false
       }).addTo(maps.main);
 
-      // Layer 2: outer glow medium
-      L.polyline(route, {
-        color: '#2664f5', weight: 20, opacity: 0.3,
-        lineCap: 'round', lineJoin: 'round'
+      // Layer 2: dashed colored line utama
+      const dashLine = L.polyline(route.pts, {
+        color: route.color, weight: 3, opacity: 0.95,
+        dashArray:'12, 8', lineCap:'round', lineJoin:'round', interactive:false
       }).addTo(maps.main);
-
-      // Layer 3: solid bright line utama
-      L.polyline(route, {
-        color: '#2664f5', weight: 10, opacity: 1,
-        lineCap: 'round', lineJoin: 'round'
-      }).addTo(maps.main);
-
-      // Layer 4: animated flowing dash putih
-      const flowLine = L.polyline(route, {
-        color: '#ffffff', weight: 6, opacity: 0.85,
-        lineCap: 'round', lineJoin: 'round'
-      }).addTo(maps.main);
-
-      const el = flowLine.getElement();
-      if (el) {
-        el.classList.add('log-pipeline-dash');
-        el.style.animationDelay = `${idx * 0.45}s`;
+      const dlEl = dashLine.getElement();
+      if (dlEl) {
+        dlEl.style.strokeDasharray = '12, 8';
+        dlEl.style.animation = `log-flow 1.4s linear infinite`;
+        dlEl.style.animationDelay = `${idx * 0.28}s`;
       }
 
-      // Layer 5: pulse dot bergerak
-      const pulseEl = L.polyline(route, {
-        color: '#6b9fff', weight: 14, opacity: 0.9,
-        lineCap: 'round'
-      }).addTo(maps.main);
-      const pel = pulseEl.getElement();
-      if (pel) {
-        pel.classList.add('log-pipeline-pulse');
-        pel.style.animationDelay = `${idx * 0.7}s`;
-      }
+      // 2 titik bergerak per jalur dengan offset berbeda
+      [0, 0.5].forEach((offset, di) => {
+        const size = di === 0 ? 11 : 8;
+        const dotHtml = `<div style="
+          width:${size}px;height:${size}px;border-radius:50%;
+          background:${route.color};
+          box-shadow:0 0 10px ${route.color},0 0 20px ${route.color}80;
+          border:1.5px solid rgba(255,255,255,0.7);
+        "></div>`;
+        const marker = L.marker(route.pts[0], {
+          icon: L.divIcon({ className:'', html:dotHtml, iconSize:[size,size], iconAnchor:[size/2,size/2] }),
+          zIndexOffset: 800 + idx * 10 + di
+        }).addTo(maps.main);
+        animDots.push({ marker, pts: route.pts, progress: offset, speed: route.speed * (1 + di * 0.3) });
+      });
     });
 
-    // Depots
-    const depots = [
-      { name:'Jakarta Depot', lat:-6.21, lng:106.85 },
-      { name:'Surabaya Depot', lat:-7.25, lng:112.75 },
-      { name:'Balikpapan Depot', lat:-1.27, lng:116.83 },
-      { name:'Medan Depot', lat:3.58, lng:98.67 },
-      { name:'Makassar Depot', lat:-5.14, lng:119.43 },
+    // ── Node markers: hijau = depot, oranye = terminal, merah = alert ─
+    const NODES = [
+      { lat:-6.21, lng:106.85, color:'#00d4a0', label:'Jakarta Depot' },
+      { lat:-7.25, lng:112.75, color:'#00d4a0', label:'Surabaya Depot' },
+      { lat:-1.27, lng:116.83, color:'#00d4a0', label:'Balikpapan Depot' },
+      { lat: 3.58, lng: 98.67, color:'#00d4a0', label:'Medan Depot' },
+      { lat:-5.14, lng:119.43, color:'#00d4a0', label:'Makassar Depot' },
+      { lat: 0.13, lng:117.50, color:'#f5a623', label:'Bontang Terminal' },
+      { lat:-2.99, lng:104.76, color:'#f5a623', label:'Palembang Terminal' },
+      { lat: 1.67, lng:101.44, color:'#f5a623', label:'Dumai Terminal' },
     ];
-    depots.forEach(d => {
-      const html = `<div style="background:#00d4a020;border:2px solid #00d4a0;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 0 8px #00d4a060;">🏪</div>`;
-      L.marker([d.lat,d.lng], { icon: L.divIcon({ className:'', html, iconSize:[22,22], iconAnchor:[11,11] }) })
-        .addTo(maps.main).bindPopup(`<div style="background:#111c35;border:1px solid #2a5298;border-radius:6px;padding:8px;color:#eef2ff;font-size:11px;font-family:Inter,sans-serif;">${d.name}</div>`);
+    NODES.forEach(n => {
+      const html = `<div style="
+        width:13px;height:13px;border-radius:50%;
+        background:${n.color};
+        box-shadow:0 0 10px ${n.color},0 0 22px ${n.color}60;
+        border:2px solid rgba(255,255,255,0.55);
+      "></div>`;
+      L.marker([n.lat,n.lng], {
+        icon: L.divIcon({ className:'', html, iconSize:[13,13], iconAnchor:[6.5,6.5] }),
+        zIndexOffset: 600
+      }).addTo(maps.main)
+        .bindPopup(`<div style="background:#111c35;border:1px solid #2a5298;border-radius:6px;padding:8px 10px;color:#eef2ff;font-size:11px;font-family:Inter,sans-serif;">${n.label}</div>`);
     });
 
-    // GPS Truck trails
-    const trucks = [
-      { pts: [[-6.4,107.1],[-6.35,107.4],[-6.3,107.7]] },
-      { pts: [[-7.5,110.2],[-7.4,110.6],[-7.3,111.0]] },
-    ];
-    trucks.forEach(t => {
-      L.polyline(t.pts, { color:'#ff4055', weight:3, opacity:0.9, dashArray:'5,5', lineCap:'round' }).addTo(maps.main);
-      const last = t.pts[t.pts.length-1];
-      const html = `<div style="background:#ff405520;border:2px solid #ff4055;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:9px;">🚛</div>`;
-      L.marker(last, { icon: L.divIcon({ className:'', html, iconSize:[18,18], iconAnchor:[9,9] }) }).addTo(maps.main);
+    // Alert node merah berkedip
+    const alertHtml = `<div style="
+      width:13px;height:13px;border-radius:50%;
+      background:#ff4055;
+      box-shadow:0 0 12px #ff4055;
+      border:2px solid rgba(255,255,255,0.7);
+      animation:pulse-ring 1.4s ease-out infinite;
+    "></div>`;
+    L.marker([-6.05,105.85], {
+      icon: L.divIcon({ className:'', html:alertHtml, iconSize:[13,13], iconAnchor:[6.5,6.5] }),
+      zIndexOffset: 900
+    }).addTo(maps.main)
+      .bindPopup(`<div style="background:#1a0a0e;border:1px solid #ff4055;border-radius:6px;padding:8px 10px;color:#ff8090;font-size:11px;font-family:Inter,sans-serif;">⚠ Selat Sunda — Alert</div>`);
+
+    // Vessel dots (biru lebih kecil, seperti di gambar referensi)
+    [[0.5,104.2,'#2664f5','Tanker Alpha'],[-4.0,108.0,'#2664f5','LNG Carrier Beta']].forEach(([lat,lng,c,name]) => {
+      const html = `<div style="width:10px;height:10px;border-radius:50%;background:${c};box-shadow:0 0 8px ${c};border:1.5px solid rgba(255,255,255,0.6);"></div>`;
+      L.marker([lat,lng], {
+        icon: L.divIcon({ className:'', html, iconSize:[10,10], iconAnchor:[5,5] }),
+        zIndexOffset: 700
+      }).addTo(maps.main)
+        .bindPopup(`<div style="background:#111c35;border:1px solid #2a5298;border-radius:6px;padding:8px;color:#eef2ff;font-size:11px;font-family:Inter,sans-serif;">${name}</div>`);
     });
 
-    // Vessel positions
-    const vessels = [
-      { lat: 0.5, lng: 104.2, name:'Tanker Alpha' },
-      { lat: -4.0, lng: 108.0, name:'LNG Carrier Beta' },
-    ];
-    vessels.forEach(v => {
-      const html = `<div style="background:#00c8ff20;border:2px solid #00c8ff;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:10px;box-shadow:0 0 8px #00c8ff50;">🚢</div>`;
-      L.marker([v.lat,v.lng], { icon: L.divIcon({ className:'', html, iconSize:[22,22], iconAnchor:[11,11] }) })
-        .addTo(maps.main).bindPopup(`<div style="background:#111c35;border:1px solid #2a5298;border-radius:6px;padding:8px;color:#eef2ff;font-size:11px;font-family:Inter,sans-serif;">${v.name}</div>`);
+    // White dot (seperti di gambar referensi — static waypoint)
+    [[-7.72,109.01],[-7.5,110.6]].forEach(pos => {
+      const html = `<div style="width:8px;height:8px;border-radius:50%;background:#ffffff;box-shadow:0 0 8px #ffffff90;border:1px solid rgba(255,255,255,0.4);"></div>`;
+      L.marker(pos, { icon: L.divIcon({ className:'', html, iconSize:[8,8], iconAnchor:[4,4] }), zIndexOffset:500 }).addTo(maps.main);
     });
+
+    // ── rAF animation loop untuk titik bergerak ────────────────────────
+    function tick() {
+      if (!maps.main) return;
+      animDots.forEach(d => {
+        d.progress += d.speed;
+        if (d.progress >= 1) d.progress -= 1;
+        const pts  = d.pts;
+        const tot  = pts.length - 1;
+        const prog = d.progress * tot;
+        const seg  = Math.min(Math.floor(prog), tot - 1);
+        const t    = prog - seg;
+        const a    = pts[seg], b = pts[seg + 1];
+        d.marker.setLatLng([a[0] + (b[0]-a[0])*t, a[1] + (b[1]-a[1])*t]);
+      });
+      maps._raf = requestAnimationFrame(tick);
+    }
+    maps._raf = requestAnimationFrame(tick);
+    maps._animDots = animDots;
   }
 
   function startUpdates() {}
@@ -279,9 +350,11 @@ window.DashLogistics = (() => {
   function destroy() {
     intervals.forEach(clearInterval);
     intervals = [];
+    if (maps._raf) { cancelAnimationFrame(maps._raf); maps._raf = null; }
     Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
     charts = {};
     if (maps.main) { maps.main.remove(); maps.main = null; }
+    animDots = [];
   }
 
   return { init, destroy };
