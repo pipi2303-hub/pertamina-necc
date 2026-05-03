@@ -32,6 +32,7 @@ window.App = (() => {
     logistics:    () => window.DashLogistics,
     distribution: () => window.DashDistribution,
     spklu:        () => window.DashSPKLU,
+    ai:           () => window.DashAI,
   };
 
   function navigate(name) {
