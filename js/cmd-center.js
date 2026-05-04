@@ -172,15 +172,29 @@ window.DashCommand = (() => {
 
     // pipeline lines
     const routes = [
-      [[-6.21,106.85],[-7.72,109.01]],
-      [[-7.72,109.01],[-7.25,112.75]],
-      [[-2.99,104.76],[1.67,101.44]],
-      [[1.67,101.44],[3.58,98.67]],
-      [[-1.27,116.83],[0.13,117.50]],
+      { coords: [[-6.21,106.85],[-7.72,109.01]], color: '#00ffdd' },
+      { coords: [[-7.72,109.01],[-7.25,112.75]], color: '#00eeff' },
+      { coords: [[-2.99,104.76],[1.67,101.44]], color: '#ffe033' },
+      { coords: [[1.67,101.44],[3.58,98.67]],   color: '#ff9f00' },
+      { coords: [[-1.27,116.83],[0.13,117.50]],  color: '#00ff99' },
     ];
+    maps.pipes = [];
     routes.forEach(r => {
-      L.polyline(r, { color: '#1a7fe8', weight: 1.5, opacity: 0.5, dashArray: '5,5' }).addTo(maps.main);
+      const pl = L.polyline(r.coords, { color: r.color, weight: 2.5, opacity: 0.95, dashArray: '8,6' }).addTo(maps.main);
+      const el = pl.getElement();
+      if (el) el.style.filter = `drop-shadow(0 0 6px ${r.color}) drop-shadow(0 0 3px ${r.color})`;
+      maps.pipes.push(pl);
     });
+    let _poff = 0;
+    (function _animPipes() {
+      if (!maps.pipes) return;
+      _poff -= 0.3;
+      maps.pipes.forEach(pl => {
+        const el = pl.getElement();
+        if (el) el.setAttribute('stroke-dashoffset', _poff);
+      });
+      maps.animFrame = requestAnimationFrame(_animPipes);
+    })();
   }
 
   function initCharts() {
@@ -192,7 +206,6 @@ window.DashCommand = (() => {
 
   function startUpdates() {
     const iid = setInterval(() => {
-      // Rotate alert flash
       const alertEls = document.querySelectorAll('.alert-item.critical .alert-title .blink');
       alertEls.forEach(el => el.style.opacity = Math.random() > 0.5 ? '1' : '0.2');
     }, 1500);
@@ -336,7 +349,9 @@ window.DashCommand = (() => {
     intervals = [];
     Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
     charts = {};
+    if (maps.animFrame) { cancelAnimationFrame(maps.animFrame); maps.animFrame = null; }
     if (maps.main) { maps.main.remove(); maps.main = null; }
+    maps.pipes = null;
   }
 
   return { init, destroy };

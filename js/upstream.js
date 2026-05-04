@@ -197,17 +197,30 @@ window.DashUpstream = (() => {
         .bindPopup(`<div style="background:#111c35;border:1px solid #2a5298;border-radius:6px;padding:8px 10px;color:#eef2ff;font-size:11px;font-family:Inter,sans-serif;"><strong>${p.name}</strong><br><span style="color:${c};">${p.status.toUpperCase()}</span></div>`);
     });
     // pipeline connections
+    maps.pipes = [];
     platforms.forEach((p,i) => {
       if (i > 0) {
-        L.polyline([[platforms[0].lat,platforms[0].lng],[p.lat,p.lng]], { color:'#1a7fe8', weight:1.5, opacity:0.4, dashArray:'4,4' }).addTo(maps.main);
+        const pl = L.polyline([[platforms[0].lat,platforms[0].lng],[p.lat,p.lng]], { color:'#00ffdd', weight:2.5, opacity:0.95, dashArray:'8,6' }).addTo(maps.main);
+        const el = pl.getElement();
+        if (el) el.style.filter = 'drop-shadow(0 0 6px #00ffdd) drop-shadow(0 0 3px #00ffdd)';
+        maps.pipes.push(pl);
       }
     });
+    let _poff = 0;
+    (function _animPipes() {
+      if (!maps.pipes) return;
+      _poff -= 0.3;
+      maps.pipes.forEach(pl => {
+        const el = pl.getElement();
+        if (el) el.setAttribute('stroke-dashoffset', _poff);
+      });
+      maps.animFrame = requestAnimationFrame(_animPipes);
+    })();
   }
 
   function startUpdates() {
     const iid = setInterval(() => {
       if (!document.getElementById('ups-map')) { clearInterval(iid); return; }
-      // update sparklines with small nudge
     }, 4000);
     intervals.push(iid);
   }
@@ -217,7 +230,9 @@ window.DashUpstream = (() => {
     intervals = [];
     Object.values(charts).forEach(c => { try { c.destroy(); } catch(e){} });
     charts = {};
+    if (maps.animFrame) { cancelAnimationFrame(maps.animFrame); maps.animFrame = null; }
     if (maps.main) { maps.main.remove(); maps.main = null; }
+    maps.pipes = null;
   }
 
   return { init, destroy };

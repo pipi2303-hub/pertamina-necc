@@ -112,45 +112,99 @@ window.DashRefinery = (() => {
         <div class="card" style="padding:10px 12px;display:flex;flex-direction:column;min-height:0;">
           <div class="card-title"><span class="card-title-dot" style="background:var(--cyan);"></span>FLUID CATALYTIC CRACKING — PROCESS FLOW</div>
           <div style="flex:1;position:relative;min-height:0;display:flex;align-items:center;justify-content:center;">
+            <style>
+              @keyframes rf-flow-a { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -13; } }
+              @keyframes rf-flow-b { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -12; } }
+              @keyframes rf-flow-c { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -10; } }
+              @keyframes rf-flow-d { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -8;  } }
+              @keyframes rf-flow-e { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -11; } }
+            </style>
             <svg id="ref-flow-svg" viewBox="0 0 720 300" style="width:100%;height:100%;max-height:260px;">
-              <!-- define gradient -->
               <defs>
-                <linearGradient id="pipeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                  <stop offset="0%" style="stop-color:#1a7fe8;stop-opacity:0.3"/>
-                  <stop offset="50%" style="stop-color:#00c8ff;stop-opacity:0.8"/>
-                  <stop offset="100%" style="stop-color:#1a7fe8;stop-opacity:0.3"/>
-                </linearGradient>
-                <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
-                  <path d="M0,0 L0,8 L8,4 Z" fill="#1a7fe8" opacity="0.7"/>
+                <marker id="arrow-blue" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                  <path d="M0,0 L0,7 L7,3.5 Z" fill="#1a7fe8"/>
                 </marker>
+                <marker id="arrow-orange" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                  <path d="M0,0 L0,7 L7,3.5 Z" fill="#f5a623"/>
+                </marker>
+                <marker id="arrow-cyan" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                  <path d="M0,0 L0,7 L7,3.5 Z" fill="#00c8ff"/>
+                </marker>
+                <marker id="arrow-green" markerWidth="7" markerHeight="7" refX="3.5" refY="3.5" orient="auto">
+                  <path d="M0,0 L0,7 L7,3.5 Z" fill="#00d4a0"/>
+                </marker>
+                <filter id="glow-blue" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="2.5" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+                <filter id="glow-orange" x="-40%" y="-40%" width="180%" height="180%">
+                  <feGaussianBlur stdDeviation="2" result="blur"/>
+                  <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
               </defs>
 
-              <!-- Pipes -->
-              <line x1="80" y1="100" x2="148" y2="100" stroke="#1a7fe8" stroke-width="2" stroke-dasharray="6,3" opacity="0.6" marker-end="url(#arrow)"/>
-              <line x1="240" y1="90" x2="290" y2="70" stroke="#1a7fe8" stroke-width="2" opacity="0.6" marker-end="url(#arrow)"/>
-              <line x1="240" y1="110" x2="290" y2="185" stroke="#f5a623" stroke-width="2" opacity="0.6" marker-end="url(#arrow)"/>
-              <line x1="240" y1="100" x2="290" y2="130" stroke="#00c8ff" stroke-width="1.5" opacity="0.5"/>
-              <line x1="380" y1="65" x2="440" y2="100" stroke="#1a7fe8" stroke-width="2" opacity="0.6" marker-end="url(#arrow)"/>
-              <line x1="380" y1="190" x2="440" y2="140" stroke="#f5a623" stroke-width="2" opacity="0.6" marker-end="url(#arrow)"/>
-              <line x1="530" y1="115" x2="575" y2="85" stroke="#00d4a0" stroke-width="2" opacity="0.6" marker-end="url(#arrow)"/>
-              <line x1="530" y1="130" x2="575" y2="185" stroke="#00d4a0" stroke-width="1.5" opacity="0.5" marker-end="url(#arrow)"/>
-              <line x1="192" y1="130" x2="192" y2="160" stroke="#00c8ff" stroke-width="1.5" opacity="0.4" marker-end="url(#arrow)"/>
+              <!-- Pipes with CSS animated flow -->
 
-              <!-- Temperature/Pressure labels on pipes -->
+              <!-- 1. Crude Oil → CDU -->
+              <path d="M80,100 L148,100" stroke="#1a7fe8" stroke-width="2" fill="none" opacity="0.9"
+                stroke-dasharray="8,5" marker-end="url(#arrow-blue)" filter="url(#glow-blue)"
+                style="animation: rf-flow-a 0.9s linear infinite"/>
+
+              <!-- 2. CDU → FCC top -->
+              <path d="M240,90 L290,70" stroke="#1a7fe8" stroke-width="2" fill="none" opacity="0.9"
+                stroke-dasharray="7,5" marker-end="url(#arrow-blue)" filter="url(#glow-blue)"
+                style="animation: rf-flow-b 1.3s linear infinite"/>
+
+              <!-- 3. CDU → Hydrocracker -->
+              <path d="M240,110 L290,185" stroke="#f5a623" stroke-width="2" fill="none" opacity="0.9"
+                stroke-dasharray="8,5" marker-end="url(#arrow-orange)" filter="url(#glow-orange)"
+                style="animation: rf-flow-a 1.6s linear infinite"/>
+
+              <!-- 4. CDU bypass -->
+              <path d="M240,100 L290,130" stroke="#00c8ff" stroke-width="1.5" fill="none" opacity="0.7"
+                stroke-dasharray="6,4"
+                style="animation: rf-flow-c 2.0s linear infinite"/>
+
+              <!-- 5. FCC → Blending -->
+              <path d="M380,65 L440,100" stroke="#1a7fe8" stroke-width="2" fill="none" opacity="0.9"
+                stroke-dasharray="8,5" marker-end="url(#arrow-blue)" filter="url(#glow-blue)"
+                style="animation: rf-flow-a 1.1s linear infinite"/>
+
+              <!-- 6. Hydrocracker → Blending -->
+              <path d="M380,190 L440,140" stroke="#f5a623" stroke-width="2" fill="none" opacity="0.9"
+                stroke-dasharray="8,5" marker-end="url(#arrow-orange)" filter="url(#glow-orange)"
+                style="animation: rf-flow-a 1.5s linear infinite"/>
+
+              <!-- 7. Blending → Diesel -->
+              <path d="M530,115 L575,85" stroke="#00d4a0" stroke-width="2" fill="none" opacity="0.9"
+                stroke-dasharray="7,4" marker-end="url(#arrow-green)"
+                style="animation: rf-flow-e 1.0s linear infinite"/>
+
+              <!-- 8. Blending → Storage -->
+              <path d="M530,130 L575,185" stroke="#00d4a0" stroke-width="1.5" fill="none" opacity="0.75"
+                stroke-dasharray="7,4" marker-end="url(#arrow-green)"
+                style="animation: rf-flow-e 1.4s linear infinite"/>
+
+              <!-- 9. CDU → VDU vertical -->
+              <path d="M192,130 L192,160" stroke="#00c8ff" stroke-width="1.5" fill="none" opacity="0.7"
+                stroke-dasharray="5,3" marker-end="url(#arrow-cyan)"
+                style="animation: rf-flow-d 1.8s linear infinite"/>
+
+              <!-- Labels on pipes -->
               <text x="100" y="93" font-size="8" fill="#8095be">120k BPD</text>
-              <text x="258" y="55" font-size="7" fill="#1a7fe8">10,000</text>
-              <text x="258" y="180" font-size="7" fill="#f5a623">6,500</text>
+              <text x="249" y="55" font-size="7" fill="#1a7fe8">10,000</text>
+              <text x="249" y="180" font-size="7" fill="#f5a623">6,500</text>
 
               <!-- Nodes -->
               ${[
-                { x:10, y:75, w:70, h:50, label:'CRUDE OIL', val:'120,000 BPD', color:'#1a7fe8' },
-                { x:148, y:55, w:92, h:90, label:'DISTILLATION UNIT (CDU)', val:'120,000 BPD\n326.1°F', color:'#1a7fe8' },
-                { x:148, y:160, w:88, h:50, label:'VACUUM UNIT (VDU)', val:'40,000 BPD', color:'#00c8ff' },
-                { x:290, y:35, w:90, h:60, label:'FLUID CAT. CRACKING', val:'10,500 BPD', color:'#f5a623' },
-                { x:290, y:155, w:90, h:60, label:'HYDROCRACKER', val:'24,000 BPD', color:'#a855f7' },
-                { x:440, y:85, w:90, h:70, label:'BLENDING &\nSTORAGE', val:'34,000 BPD', color:'#00d4a0' },
-                { x:575, y:55, w:75, h:50, label:'DIESEL', val:'36,000 BPD', color:'#00d4a0' },
-                { x:575, y:160, w:75, h:50, label:'STORAGE', val:'+ 6,000 BPD', color:'#4a5f82' },
+                { x:10,  y:75,  w:70, h:50, label:'CRUDE OIL',              val:'120,000 BPD',      color:'#1a7fe8' },
+                { x:148, y:55,  w:92, h:90, label:'DISTILLATION UNIT (CDU)', val:'120,000 BPD\n326.1°F', color:'#1a7fe8' },
+                { x:148, y:160, w:88, h:50, label:'VACUUM UNIT (VDU)',       val:'40,000 BPD',       color:'#00c8ff' },
+                { x:290, y:35,  w:90, h:60, label:'FLUID CAT. CRACKING',    val:'10,500 BPD',       color:'#f5a623' },
+                { x:290, y:155, w:90, h:60, label:'HYDROCRACKER',            val:'24,000 BPD',       color:'#a855f7' },
+                { x:440, y:85,  w:90, h:70, label:'BLENDING &\nSTORAGE',    val:'34,000 BPD',       color:'#00d4a0' },
+                { x:575, y:55,  w:75, h:50, label:'DIESEL',                  val:'36,000 BPD',       color:'#00d4a0' },
+                { x:575, y:160, w:75, h:50, label:'STORAGE',                 val:'+ 6,000 BPD',      color:'#4a5f82' },
               ].map(n => `
               <g>
                 <rect x="${n.x}" y="${n.y}" width="${n.w}" height="${n.h}" rx="6"
@@ -159,11 +213,6 @@ window.DashRefinery = (() => {
                 ${n.label.includes('\n') ? `<text x="${n.x+n.w/2}" y="${n.y+24}" font-size="7" fill="${n.color}" text-anchor="middle" opacity="0.8">${n.label.split('\n')[1]}</text>` : ''}
                 <text x="${n.x+n.w/2}" y="${n.y+n.h-10}" font-size="8" fill="#c5d0e8" text-anchor="middle">${n.val}</text>
               </g>`).join('')}
-
-              <!-- Pipeline animated flow -->
-              <rect x="80" y="97" width="0" height="6" fill="url(#pipeGrad)" rx="3">
-                <animate attributeName="width" values="0;68;0" dur="2s" repeatCount="indefinite"/>
-              </rect>
             </svg>
           </div>
         </div>
